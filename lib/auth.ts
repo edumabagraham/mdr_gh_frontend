@@ -64,3 +64,52 @@ export async function getUser(): Promise<User> {
   const response = await axios.get<User>('/api/user');
   return response.data;
 }
+export interface ResetPasswordData {
+  email: string;
+  code: string;
+  password: string;
+  password_confirmation: string;
+}
+
+/** Endpoints that report an outcome rather than returning a resource. */
+export interface MessageResponse {
+  message: string;
+}
+
+/**
+ * Confirm the signed-in user's email address with the code that was mailed.
+ *
+ * A wrong, expired or exhausted code comes back as a 422 with the reason under
+ * `errors.code`, so the verification form renders it like any field error.
+ */
+export async function verifyEmail(code: string): Promise<User> {
+  await csrf();
+  const response = await axios.post<User>('/api/email/verify', { code });
+  return response.data;
+}
+
+/** Mail a fresh code, which invalidates whichever code is outstanding. */
+export async function resendVerificationCode(): Promise<MessageResponse> {
+  await csrf();
+  const response = await axios.post<MessageResponse>('/api/email/resend');
+  return response.data;
+}
+
+/**
+ * Start the forgotten-password flow.
+ *
+ * The reply is the same whether or not the address has an account — the API
+ * will not confirm who is registered — so the UI must not promise an email.
+ */
+export async function forgotPassword(email: string): Promise<MessageResponse> {
+  await csrf();
+  const response = await axios.post<MessageResponse>('/api/forgot-password', { email });
+  return response.data;
+}
+
+/** Finish the forgotten-password flow with the emailed code. */
+export async function resetPassword(data: ResetPasswordData): Promise<MessageResponse> {
+  await csrf();
+  const response = await axios.post<MessageResponse>('/api/reset-password', data);
+  return response.data;
+}

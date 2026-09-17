@@ -1,16 +1,20 @@
 'use client';
 
-import { useState, FormEvent, ChangeEvent } from 'react';
+import { useState, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Axios from 'axios';
-import { login, ValidationErrorResponse } from '@/lib/auth';
+import { login } from '@/lib/auth';
+import { toFormFailure } from '@/lib/form-errors';
+import AuthShell from '@/components/AuthShell';
+import FormField from '@/components/FormField';
+import PrimaryButton from '@/components/PrimaryButton';
 
 export default function LoginPage() {
   const router = useRouter();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [remember, setRemember] = useState(false);
   const [errors, setErrors] = useState<Record<string, string[]>>({});
   const [status, setStatus] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -22,90 +26,81 @@ export default function LoginPage() {
     setSubmitting(true);
 
     try {
-      await login({ email, password });
-      router.push('/dashboard');
+      const user = await login({ email, password, remember });
+
+      // An account that never finished verification can log in, but it lands
+      // on the code form rather than the dashboard.
+      router.push(user.email_verified_at ? '/dashboard' : '/verify-email');
     } catch (error) {
-      // TypeScript types a caught error as `unknown`, so a type guard is
-      // required before reading error.response.
-      if (Axios.isAxiosError<ValidationErrorResponse>(error)) {
-        if (error.response?.status === 422) {
-          setErrors(error.response.data.errors);
-        } else if (error.response) {
-          setStatus(`Login failed with status ${error.response.status}.`);
-          console.error('Login error:', error.response.status, error.response.data);
-        } else {
-          setStatus('Could not reach the server. Is php artisan serve running?');
-        }
-      } else {
-        setStatus('Something unexpected went wrong.');
-        console.error(error);
-      }
+      const failure = toFormFailure(error);
+      setErrors(failure.errors);
+      setStatus(failure.message);
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <main className="mx-auto mt-24 w-full max-w-sm px-6">
-      <h1 className="mb-8 text-2xl font-medium">Log in</h1>
+    <AuthShell
+      headline="A Centre of Excellence"
+      blurb="Sign in to continue to the Movement Disorder Registry. Access is limited to
+             authorised clinical and research staff."
+    >
+      <h2 className="mb-6 text-center text-lg font-semibold text-brand-green">Sign In</h2>
 
       <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-        <div>
-          <label htmlFor="email" className="mb-1.5 block text-sm">
-            Email
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            value={email}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
-            className="w-full rounded border border-neutral-600 bg-transparent px-3 py-2
-                       focus:border-neutral-300 focus:outline-none"
-          />
-          {errors.email && (
-            <p className="mt-1.5 text-sm text-red-500">{errors.email[0]}</p>
-          )}
-        </div>
+        <FormField
+          id="email"
+          label="Email Address"
+          type="email"
+          autoComplete="email"
+          required
+          value={email}
+          onChange={setEmail}
+          error={errors.email?.[0]}
+        />
 
         <div>
-          <label htmlFor="password" className="mb-1.5 block text-sm">
-            Password
-          </label>
-          <input
+          <FormField
             id="password"
-            name="password"
+            label="Password"
             type="password"
             autoComplete="current-password"
+            required
             value={password}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
-            className="w-full rounded border border-neutral-600 bg-transparent px-3 py-2
-                       focus:border-neutral-300 focus:outline-none"
+            onChange={setPassword}
+            error={errors.password?.[0]}
           />
-          {errors.password && (
-            <p className="mt-1.5 text-sm text-red-500">{errors.password[0]}</p>
-          )}
+          <p className="mt-1.5 text-right">
+            <Link href="/forgot-password" className="text-xs text-brand-green hover:underline">
+              Forgot password?
+            </Link>
+          </p>
         </div>
 
-        {status && <p className="text-sm text-red-500">{status}</p>}
+        <label className="flex items-center gap-2 text-sm text-muted">
+          <input
+            type="checkbox"
+            checked={remember}
+            onChange={(event) => setRemember(event.target.checked)}
+            className="h-4 w-4 rounded border-line accent-[var(--brand-green)]"
+          />
+          Remember me
+        </label>
 
-        <button
-          type="submit"
-          disabled={submitting}
-          className="w-full rounded bg-white px-4 py-2 text-black
-                     disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          {submitting ? 'Logging in…' : 'Log in'}
-        </button>
+        {status && <p className="text-sm text-brand-red">{status}</p>}
+
+        <PrimaryButton disabled={submitting}>
+          {submitting ? 'Signing in…' : 'Log In'}
+        </PrimaryButton>
       </form>
 
-      <p className="mt-6 text-sm text-neutral-400">
-        No account yet?{' '}
-        <Link href="/register" className="underline">
-          Create one
+      <p className="mt-6 text-center text-sm text-muted">
+        Don&apos;t have an account?{' '}
+        <Link href="/register" className="font-semibold text-brand-green hover:underline">
+          Create your account
         </Link>
       </p>
-    </main>
+    </AuthShell>
   );
 }
