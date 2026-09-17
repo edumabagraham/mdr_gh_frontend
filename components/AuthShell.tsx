@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import BrandMark from './BrandMark';
+import CrestWatermark from './CrestWatermark';
 
 interface AuthShellProps {
   /** The bold line under the wordmark, in crest red. */
@@ -18,11 +19,7 @@ interface AuthShellProps {
 export default function AuthShell({ headline, blurb, children }: AuthShellProps) {
   return (
     <div className="relative flex min-h-screen flex-1 flex-col overflow-hidden">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[url('/kath_logo.png')] bg-[length:620px_620px]
-                   bg-center bg-no-repeat opacity-[0.03]"
-      />
+      <CrestWatermark />
 
       <div
         className="relative mx-auto flex w-full max-w-7xl flex-1 flex-col items-center justify-center
