@@ -77,12 +77,12 @@ export default function DashboardPage() {
       <header className="border-b border-line bg-surface">
         {/* The bar runs the full width of the window, so the lockup and the
             log-out button sit against opposite edges. */}
-        <div className="flex w-full items-center justify-between gap-8 px-8 py-4">
+        <div className="flex w-full items-center justify-between gap-4 px-4 py-3 sm:gap-8 sm:px-8 sm:py-4">
           <BrandMark compact />
           <button
             onClick={handleLogout}
-            className="rounded-md border border-line px-3.5 py-2 text-sm font-medium text-muted
-                       transition hover:border-brand-red hover:text-brand-red"
+            className="shrink-0 rounded-md border border-line px-3 py-2 text-xs font-medium text-muted
+                       transition hover:border-brand-red hover:text-brand-red sm:px-3.5 sm:text-sm"
           >
             Log out
           </button>
@@ -92,13 +92,13 @@ export default function DashboardPage() {
       <div className="relative flex flex-1 flex-col overflow-hidden">
         <CrestWatermark />
 
-        <main className="relative w-full flex-1 px-8 py-10">
+        <main className="relative w-full flex-1 px-4 py-8 sm:px-8 sm:py-10">
         {loading && <p className="text-sm text-muted">Loading…</p>}
 
         {/* Only reached when something other than a plain 401 happened. Once auth
             is working reliably you can drop this branch and redirect always. */}
         {!loading && failure && (
-          <div className="max-w-3xl rounded-xl border border-line bg-surface p-6">
+          <div className="max-w-3xl rounded-xl border border-line bg-surface p-5 sm:p-6">
             <p className="text-sm text-brand-red">{failure}</p>
             <button
               onClick={() => router.push('/login')}
@@ -110,8 +110,11 @@ export default function DashboardPage() {
         )}
 
         {!loading && !failure && user && (
-          <div className="max-w-3xl rounded-xl border border-line bg-surface p-8 shadow-sm">
-            <h1 className="text-2xl font-semibold tracking-tight">Welcome, {user.name}</h1>
+          <div className="max-w-3xl rounded-xl border border-line bg-surface p-6 shadow-sm sm:p-8
+                          2xl:max-w-4xl">
+            <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">
+              Welcome, {user.name}
+            </h1>
             <p className="mt-1 text-sm text-muted">{user.email}</p>
             <p className="mt-6 inline-flex items-center gap-2 rounded-full bg-brand-green/10 px-3 py-1
                           text-xs font-medium text-brand-green">
@@ -122,7 +125,7 @@ export default function DashboardPage() {
         </main>
       </div>
 
-      <footer className="border-t border-line py-5 text-center text-xs text-muted">
+      <footer className="border-t border-line px-4 py-5 text-center text-xs text-muted">
         © {new Date().getFullYear()} Komfo Anokye Teaching Hospital, Kumasi. Movement Disorder
         Registry (MDR KATH).
       </footer>

@@ -23,20 +23,31 @@ export default function AuthShell({ headline, blurb, children }: AuthShellProps)
 
       <div
         className="relative mx-auto flex w-full max-w-7xl flex-1 flex-col items-center justify-center
-                   gap-12 px-6 py-14 lg:flex-row lg:items-center lg:justify-between lg:gap-32"
+                   gap-10 px-5 py-10 sm:px-8 sm:py-14 lg:flex-row lg:items-center
+                   lg:justify-between lg:gap-24 xl:gap-32 2xl:max-w-[1700px]"
       >
-        <section className="w-full max-w-md lg:max-w-xl lg:flex-1">
+        <section className="w-full max-w-md lg:max-w-xl lg:flex-1 2xl:max-w-2xl">
           <BrandMark />
-          <h1 className="mt-8 text-3xl font-bold tracking-tight text-brand-red">{headline}</h1>
-          <p className="mt-3 max-w-sm text-sm leading-6 text-muted">{blurb}</p>
+          <h1
+            className="mt-6 text-2xl font-bold tracking-tight text-brand-red sm:mt-8 sm:text-3xl
+                       2xl:text-4xl"
+          >
+            {headline}
+          </h1>
+          <p className="mt-3 max-w-sm text-sm leading-6 text-muted 2xl:max-w-md 2xl:text-base">
+            {blurb}
+          </p>
         </section>
 
-        <section className="w-full max-w-md rounded-xl border border-line bg-surface p-8 shadow-sm">
+        <section
+          className="w-full max-w-md shrink-0 rounded-xl border border-line bg-surface p-6 shadow-sm
+                     sm:p-8 2xl:max-w-lg 2xl:p-10"
+        >
           {children}
         </section>
       </div>
 
-      <footer className="relative border-t border-line py-5 text-center text-xs text-muted">
+      <footer className="relative border-t border-line px-5 py-5 text-center text-xs text-muted">
         © {new Date().getFullYear()} Komfo Anokye Teaching Hospital, Kumasi. Movement Disorder
         Registry (MDR KATH).
       </footer>
