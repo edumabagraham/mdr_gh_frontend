@@ -20,15 +20,15 @@ export default function AuthShell({ headline, blurb, children }: AuthShellProps)
     <div className="relative flex min-h-screen flex-1 flex-col overflow-hidden">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[url('/logo.png')] bg-[length:640px_640px]
-                   bg-center bg-no-repeat opacity-[0.04]"
+        className="pointer-events-none absolute inset-0 bg-[url('/kath_logo.png')] bg-[length:620px_620px]
+                   bg-center bg-no-repeat opacity-[0.03]"
       />
 
       <div
-        className="relative mx-auto flex w-full max-w-6xl flex-1 flex-col items-center justify-center
-                   gap-12 px-6 py-14 lg:flex-row lg:items-center lg:gap-20"
+        className="relative mx-auto flex w-full max-w-7xl flex-1 flex-col items-center justify-center
+                   gap-12 px-6 py-14 lg:flex-row lg:items-center lg:justify-between lg:gap-32"
       >
-        <section className="w-full max-w-md lg:flex-1">
+        <section className="w-full max-w-md lg:max-w-xl lg:flex-1">
           <BrandMark />
           <h1 className="mt-8 text-3xl font-bold tracking-tight text-brand-red">{headline}</h1>
           <p className="mt-3 max-w-sm text-sm leading-6 text-muted">{blurb}</p>
