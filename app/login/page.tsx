@@ -30,7 +30,7 @@ export default function LoginPage() {
 
       // An account that never finished verification can log in, but it lands
       // on the code form rather than the dashboard.
-      router.push(user.email_verified_at ? '/dashboard' : '/verify-email');
+      router.push(user.email_verified_at ? '/' : '/verify-email');
     } catch (error) {
       const failure = toFormFailure(error);
       setErrors(failure.errors);

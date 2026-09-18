@@ -42,7 +42,7 @@ export default function BrandMark({ compact = false }: { compact?: boolean }) {
         />
       </span>
 
-      <span aria-hidden className={`shrink-0 rounded-full bg-line-strong ${divider}`} />
+      <span aria-hidden className={`shrink-0 full bg-line-strong ${divider}`} />
 
       <div className={`flex items-center ${compact ? 'gap-2 sm:gap-2.5' : 'gap-2.5 sm:gap-3'}`}>
         <Image

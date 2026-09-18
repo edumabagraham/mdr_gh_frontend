@@ -34,7 +34,7 @@ export default function VerifyEmailPage() {
         if (cancelled) return;
 
         if (user.email_verified_at) {
-          router.replace('/dashboard');
+          router.replace('/');
           return;
         }
 
@@ -76,7 +76,7 @@ export default function VerifyEmailPage() {
 
     try {
       await verifyEmail(code);
-      router.push('/dashboard');
+      router.push('/');
     } catch (error) {
       const failure = toFormFailure(error);
       setErrors(failure.errors);

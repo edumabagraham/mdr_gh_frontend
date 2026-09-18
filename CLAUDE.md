@@ -2,17 +2,19 @@
 
 # Frontend
 
-Next.js 15 (App Router, TypeScript, Tailwind) talking to a separate
+Next.js 16 (App Router, TypeScript, Tailwind) talking to a separate
 Laravel API. Runs on http://localhost:3000.
 
 ## Backend
 
-Laravel 12 at ~/projects/mdr_gh_api, running on http://localhost:8000.
-Postgres database `api_backend`.
+Laravel 13 at ~/projects/mdr_gh_api, running on http://localhost:8000.
+Postgres database `mdr_gh`; the test suite uses `mdr_gh_testing`.
 
 Key files:
 - routes/api.php — all endpoints
 - app/Http/Controllers/AuthController.php — register, login, logout
+- app/Http/Controllers/EmailVerificationController.php — six-digit code
+  verification; PasswordResetController.php — forgotten-password codes
 - app/Models/ — Eloquent models; check these for field names before
   writing TypeScript interfaces
 - database/migrations/ — authoritative schema
