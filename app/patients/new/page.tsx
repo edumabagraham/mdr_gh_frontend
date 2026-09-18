@@ -166,7 +166,7 @@ export default function RegisterPatientPage() {
 
     return (
       <AppShell>
-        <div className="max-w-3xl space-y-4">
+        <div className="mx-auto max-w-3xl space-y-4">
           <div
             className={`rounded-xl border p-5 ${
               blocked ? 'border-brand-red/40 bg-brand-red/5' : 'border-line bg-surface'
@@ -255,7 +255,7 @@ export default function RegisterPatientPage() {
 
   return (
     <AppShell>
-      <div className="max-w-3xl">
+      <div className="mx-auto max-w-3xl">
         <h1 className="text-xl font-semibold tracking-tight">Register a patient</h1>
         <p className="mt-1 text-sm text-muted">
           The registry number is allocated by the server once the record is saved.

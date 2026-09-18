@@ -14,7 +14,7 @@ export default function PatientRecordPage() {
 
   return (
     <AppShell>
-      <div className="max-w-3xl rounded-xl border border-line bg-surface p-6">
+      <div className="mx-auto max-w-3xl rounded-xl border border-line bg-surface p-6">
         <p className="font-mono text-xs text-muted">{params.registryNo}</p>
         <h1 className="mt-1 text-xl font-semibold tracking-tight">Patient record</h1>
         <p className="mt-2 text-sm text-muted">

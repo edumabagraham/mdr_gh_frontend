@@ -26,11 +26,17 @@ export default function DashboardPage() {
 
   const unauthenticated = Axios.isAxiosError(error) && error.response?.status === 401;
 
+  // An admin holds no clinical permissions, so the dashboard refuses them by
+  // design. Send them where their account actually does something.
+  const forbidden = Axios.isAxiosError(error) && error.response?.status === 403;
+
   useEffect(() => {
     if (unauthenticated) {
       router.replace('/login');
+    } else if (forbidden) {
+      router.replace('/admin');
     }
-  }, [unauthenticated, router]);
+  }, [unauthenticated, forbidden, router]);
 
   const nothingAtAll =
     data !== undefined &&
@@ -43,8 +49,8 @@ export default function DashboardPage() {
     <AppShell>
       {isLoading && <DashboardSkeleton />}
 
-      {!isLoading && error && !unauthenticated && (
-        <div className="max-w-xl rounded-xl border border-line bg-surface p-6">
+      {!isLoading && error && !unauthenticated && !forbidden && (
+        <div className="mx-auto max-w-xl rounded-xl border border-line bg-surface p-6">
           <h2 className="text-sm font-semibold">The dashboard could not be loaded</h2>
           <p className="mt-1 text-sm text-muted">
             {Axios.isAxiosError(error) && error.response
@@ -62,7 +68,7 @@ export default function DashboardPage() {
       )}
 
       {data && nothingAtAll && (
-        <div className="max-w-xl rounded-xl border border-line bg-surface p-6">
+        <div className="mx-auto max-w-xl rounded-xl border border-line bg-surface p-6">
           <h2 className="text-sm font-semibold">Nothing scheduled, nothing outstanding</h2>
           <p className="mt-1 text-sm text-muted">
             No clinic is booked for today and no work is waiting. Search above to open an

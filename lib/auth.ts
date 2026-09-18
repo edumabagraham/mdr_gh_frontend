@@ -1,12 +1,23 @@
 import axios from './axios';
 
+/** The four roles the registry recognises. */
+export type Role = 'admin' | 'clinician' | 'research_assistant' | 'data_manager';
+
+export type AccountStatus = 'active' | 'suspended' | 'departed';
+
+/**
+ * The account, exactly as UserResource returns it. The API deliberately does
+ * not send the access-control columns, so nothing here should be added without
+ * a matching change on that resource.
+ */
 export interface User {
   id: number;
   name: string;
   email: string;
+  role: Role;
+  status: AccountStatus;
+  specialty: string | null;
   email_verified_at: string | null;
-  created_at: string;
-  updated_at: string;
 }
 
 export interface LoginCredentials {
@@ -15,11 +26,16 @@ export interface LoginCredentials {
   remember?: boolean;
 }
 
-export interface RegisterData {
+/** What an invited person fills in to turn their invitation into an account. */
+export interface AcceptInvitationData {
+  token: string;
   name: string;
-  email: string;
   password: string;
   password_confirmation: string;
+  specialty?: string;
+  grade?: string;
+  department?: string;
+  mdc_number?: string;
 }
 
 /** Shape of a Laravel 422 response body. */
@@ -38,9 +54,16 @@ export async function csrf(): Promise<void> {
   await axios.get('/sanctum/csrf-cookie');
 }
 
-export async function register(data: RegisterData): Promise<User> {
+/**
+ * Turn an invitation into an account.
+ *
+ * There is no self-registration: the role comes from the invitation, not from
+ * anything typed here. On success the session is already signed in, so the
+ * caller can go straight to the email verification step.
+ */
+export async function acceptInvitation(data: AcceptInvitationData): Promise<User> {
   await csrf();
-  const response = await axios.post<User>('/api/register', data);
+  const response = await axios.post<User>('/api/invitations/accept', data);
   return response.data;
 }
 

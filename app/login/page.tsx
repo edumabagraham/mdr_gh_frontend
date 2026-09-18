@@ -28,9 +28,15 @@ export default function LoginPage() {
     try {
       const user = await login({ email, password, remember });
 
-      // An account that never finished verification can log in, but it lands
-      // on the code form rather than the dashboard.
-      router.push(user.email_verified_at ? '/' : '/verify-email');
+      // An account that never finished verification lands on the code form
+      // whatever its role. Admins then go to account administration: they hold
+      // no clinical permissions, so the clinician dashboard would only refuse
+      // them.
+      if (! user.email_verified_at) {
+        router.push('/verify-email');
+      } else {
+        router.push(user.role === 'admin' ? '/admin' : '/');
+      }
     } catch (error) {
       const failure = toFormFailure(error);
       setErrors(failure.errors);
@@ -95,11 +101,8 @@ export default function LoginPage() {
         </PrimaryButton>
       </form>
 
-      <p className="mt-6 text-center text-sm text-muted">
-        Don&apos;t have an account?{' '}
-        <Link href="/register" className="font-semibold text-brand-green hover:underline">
-          Create your account
-        </Link>
+      <p className="mt-6 text-center text-xs text-muted">
+        Accounts are created by invitation. Ask the registry administrator if you need access.
       </p>
     </AuthShell>
   );

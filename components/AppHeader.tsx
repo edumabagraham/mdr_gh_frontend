@@ -16,7 +16,12 @@ import { toFormFailure } from '@/lib/form-errors';
  * step of every clinical encounter, and a clinician arriving from a ward
  * should not have to navigate home to find a patient.
  */
-export default function AppHeader() {
+/**
+ * `clinicalTools` turns off patient search and the register action. An admin
+ * holds no clinical permissions, so those controls would only ever answer 403
+ * — offering them is an invitation to a dead end.
+ */
+export default function AppHeader({ clinicalTools = true }: { clinicalTools?: boolean }) {
   const router = useRouter();
 
   const [query, setQuery] = useState('');
@@ -92,10 +97,11 @@ export default function AppHeader() {
   return (
     <header className="border-b border-line bg-surface">
       <div className="flex w-full flex-wrap items-center gap-3 px-4 py-3 sm:gap-5 sm:px-8">
-        <Link href="/" className="shrink-0">
+        <Link href={clinicalTools ? '/' : '/admin'} className="shrink-0">
           <BrandMark compact />
         </Link>
 
+        {clinicalTools && (
         <div ref={container} className="relative order-last w-full sm:order-none sm:ml-4 sm:w-auto sm:flex-1">
           <form onSubmit={handleSubmit} role="search">
             <input
@@ -156,17 +162,20 @@ export default function AppHeader() {
             </div>
           )}
         </div>
+        )}
 
         <div className="ml-auto flex shrink-0 items-center gap-2 sm:gap-3">
           <ConnectionIndicator />
 
-          <Link
-            href="/patients/new"
-            className="rounded-md bg-brand-red px-3 py-2 text-xs font-semibold text-white
-                       transition hover:bg-brand-red-dark sm:text-sm"
-          >
-            Register patient
-          </Link>
+          {clinicalTools && (
+            <Link
+              href="/patients/new"
+              className="rounded-md bg-brand-red px-3 py-2 text-xs font-semibold text-white
+                         transition hover:bg-brand-red-dark sm:text-sm"
+            >
+              Register patient
+            </Link>
+          )}
 
           <button
             onClick={handleLogout}
