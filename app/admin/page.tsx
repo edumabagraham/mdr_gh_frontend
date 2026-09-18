@@ -53,19 +53,17 @@ export default function AdminPage() {
 
   // Anyone who is not an admin has no business here, and would only collect
   // 403s from every request this page makes.
+  const { data: me, error: meError } = useSWR('user', getUser, { revalidateOnFocus: false });
+
   useEffect(() => {
-    getUser()
-      .then((user) => {
-        if (user.role !== 'admin') {
-          router.replace('/');
-        }
-      })
-      .catch((failure: unknown) => {
-        if (Axios.isAxiosError(failure) && failure.response?.status === 401) {
-          router.replace('/login');
-        }
-      });
-  }, [router]);
+    if (me && me.role !== 'admin') {
+      router.replace('/');
+    }
+
+    if (Axios.isAxiosError(meError) && meError.response?.status === 401) {
+      router.replace('/login');
+    }
+  }, [me, meError, router]);
 
   const handleInvite = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();

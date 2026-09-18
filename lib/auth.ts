@@ -12,7 +12,10 @@ export type AccountStatus = 'active' | 'suspended' | 'departed';
  */
 export interface User {
   id: number;
+  title: string | null;
   name: string;
+  /** Name with the title in front, composed by the API so every screen agrees. */
+  display_name: string;
   email: string;
   role: Role;
   status: AccountStatus;
@@ -29,6 +32,7 @@ export interface LoginCredentials {
 /** What an invited person fills in to turn their invitation into an account. */
 export interface AcceptInvitationData {
   token: string;
+  title?: string;
   name: string;
   password: string;
   password_confirmation: string;
@@ -53,6 +57,23 @@ export interface ValidationErrorResponse {
 export async function csrf(): Promise<void> {
   await axios.get('/sanctum/csrf-cookie');
 }
+
+/**
+ * Titles offered at account setup.
+ *
+ * Mirrors User::TITLES on the API, which validates against the same list.
+ * Deliberately short: anyone it does not fit leaves it blank rather than being
+ * mislabelled.
+ */
+export const TITLES = ['Dr', 'Prof', 'Mr', 'Mrs', 'Ms', 'Miss', 'Mx'] as const;
+
+/** How each role is written where a person can read it. */
+export const ROLE_LABELS: Record<Role, string> = {
+  admin: 'Administrator',
+  clinician: 'Clinician',
+  research_assistant: 'Research assistant',
+  data_manager: 'Data manager',
+};
 
 /**
  * Turn an invitation into an account.
@@ -134,5 +155,24 @@ export async function forgotPassword(email: string): Promise<MessageResponse> {
 export async function resetPassword(data: ResetPasswordData): Promise<MessageResponse> {
   await csrf();
   const response = await axios.post<MessageResponse>('/api/reset-password', data);
+  return response.data;
+}
+
+export interface ChangePasswordData {
+  current_password: string;
+  password: string;
+  password_confirmation: string;
+}
+
+/**
+ * Change your own password, knowing the current one.
+ *
+ * Distinct from the forgotten-password flow: that one proves control of the
+ * mailbox, this one proves you knew the password you are replacing. Every other
+ * signed-in device is dropped; this one stays.
+ */
+export async function changePassword(data: ChangePasswordData): Promise<MessageResponse> {
+  await csrf();
+  const response = await axios.post<MessageResponse>('/api/password', data);
   return response.data;
 }

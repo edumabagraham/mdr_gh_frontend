@@ -3,10 +3,11 @@
 import { Suspense, useState, FormEvent } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { acceptInvitation } from '@/lib/auth';
+import { acceptInvitation, TITLES } from '@/lib/auth';
 import { toFormFailure } from '@/lib/form-errors';
 import AuthShell from '@/components/AuthShell';
 import FormField from '@/components/FormField';
+import SelectField from '@/components/SelectField';
 import PrimaryButton from '@/components/PrimaryButton';
 
 /**
@@ -20,6 +21,7 @@ function AcceptInvitationForm() {
   const router = useRouter();
   const token = useSearchParams().get('token') ?? '';
 
+  const [title, setTitle] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
@@ -41,6 +43,7 @@ function AcceptInvitationForm() {
     try {
       await acceptInvitation({
         token,
+        title: title || undefined,
         name,
         password,
         password_confirmation: passwordConfirmation,
@@ -91,15 +94,26 @@ function AcceptInvitationForm() {
       <h2 className="mb-6 text-center text-lg font-semibold text-brand-green">Accept Invitation</h2>
 
       <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-        <FormField
-          id="name"
-          label="Full Name"
-          required
-          autoComplete="name"
-          value={name}
-          onChange={setName}
-          error={errors.name?.[0]}
-        />
+        <div className="grid gap-5 sm:grid-cols-[7rem_1fr]">
+          <SelectField
+            id="title"
+            label="Title"
+            value={title}
+            onChange={setTitle}
+            options={TITLES.map((option) => ({ value: option, label: option }))}
+            placeholder="—"
+            error={errors.title?.[0]}
+          />
+          <FormField
+            id="name"
+            label="Full Name"
+            required
+            autoComplete="name"
+            value={name}
+            onChange={setName}
+            error={errors.name?.[0]}
+          />
+        </div>
         <FormField
           id="password"
           label="Password"

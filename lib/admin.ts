@@ -1,6 +1,8 @@
 import axios from './axios';
 import { csrf, Role } from './auth';
 
+export { ROLE_LABELS } from './auth';
+
 export type InvitationStatus = 'pending' | 'accepted' | 'revoked' | 'expired';
 
 export interface Invitation {
@@ -47,10 +49,3 @@ export async function revokeInvitation(id: number): Promise<Invitation> {
   const response = await axios.delete<Invitation>(`/api/admin/invitations/${id}`);
   return response.data;
 }
-
-export const ROLE_LABELS: Record<Role, string> = {
-  admin: 'Administrator',
-  clinician: 'Clinician',
-  research_assistant: 'Research assistant',
-  data_manager: 'Data manager',
-};

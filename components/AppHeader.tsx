@@ -5,7 +5,9 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import BrandMark from './BrandMark';
 import ConnectionIndicator from './ConnectionIndicator';
-import { logout } from '@/lib/auth';
+import UserMenu from './UserMenu';
+import useSWR from 'swr';
+import { getUser, User } from '@/lib/auth';
 import { looksLikeRegistryNumber, searchPatients, SearchResponse } from '@/lib/registry';
 import { toFormFailure } from '@/lib/form-errors';
 
@@ -23,6 +25,13 @@ import { toFormFailure } from '@/lib/form-errors';
  */
 export default function AppHeader({ clinicalTools = true }: { clinicalTools?: boolean }) {
   const router = useRouter();
+
+  // Keyed 'user' so every screen shares one request for it rather than each
+  // fetching the same account again.
+  const { data: user } = useSWR<User>('user', getUser, {
+    revalidateOnFocus: false,
+    shouldRetryOnError: false,
+  });
 
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResponse | null>(null);
@@ -83,14 +92,6 @@ export default function AppHeader({ clinicalTools = true }: { clinicalTools?: bo
     if (looksLikeRegistryNumber(trimmed)) {
       router.push(`/patients/${trimmed.toUpperCase().replace(/\s/g, '-')}`);
       setOpen(false);
-    }
-  };
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-    } finally {
-      router.push('/login');
     }
   };
 
@@ -177,13 +178,7 @@ export default function AppHeader({ clinicalTools = true }: { clinicalTools?: bo
             </Link>
           )}
 
-          <button
-            onClick={handleLogout}
-            className="rounded-md border border-line px-3 py-2 text-xs font-medium text-muted
-                       transition hover:border-brand-red hover:text-brand-red sm:text-sm"
-          >
-            Log out
-          </button>
+          {user && <UserMenu user={user} />}
         </div>
       </div>
     </header>
