@@ -25,6 +25,7 @@ export interface PatientRef {
   registry_no: string;
   name: string;
   age?: number;
+  age_is_estimated?: boolean;
   sex?: Sex;
 }
 
@@ -124,6 +125,8 @@ export interface DuplicateCandidate {
     registry_no: string;
     name: string;
     date_of_birth: string | null;
+    age: number | null;
+    age_is_estimated: boolean;
   };
   /** e.g. identifier_match, name_similarity, dob_within_2_years, phone_match */
   reasons: string[];
@@ -151,10 +154,21 @@ export interface NewPatient {
   sex: Sex;
   date_of_birth: string | null;
   dob_estimated: boolean;
-  /** Supplied instead of a date of birth when the patient does not know it. */
-  age?: number | null;
+  /**
+   * Supplied instead of a date of birth when the patient does not know it.
+   * Stored as the number given, anchored to enrolment — the server never
+   * fabricates a date of birth from it.
+   */
+  estimated_age?: number | null;
   phone_primary?: string | null;
+  /** A second number for the patient. Retention over years depends on it. */
   phone_alt?: string | null;
+  /** The person who answers when the patient's own phone is dead. */
+  contact_name?: string | null;
+  contact_relationship?: string | null;
+  contact_phone?: string | null;
+  /** Aids tracing, and discriminates duplicates. */
+  residence_district?: string | null;
   identifiers: PatientIdentifierInput[];
   folder_absent_reason?: string | null;
   duplicate_check_token?: string;
@@ -171,6 +185,9 @@ export interface Patient {
   sex: Sex;
   date_of_birth: string | null;
   dob_estimated: boolean;
+  estimated_age?: number | null;
+  age: number | null;
+  age_is_estimated: boolean;
   status: PatientStatus;
   identifiers: { system: string; value: string; is_primary: boolean }[];
 }

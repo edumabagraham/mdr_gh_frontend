@@ -6,16 +6,26 @@ interface AppShellProps {
   children: ReactNode;
   /** False on admin screens, which have no patient search or registration. */
   clinicalTools?: boolean;
+  /**
+   * False on data-entry screens. Brief 0 asks for high contrast because these
+   * screens are used on modest laptops in brightly lit rooms, and a crest
+   * behind a column of form fields costs legibility for no gain.
+   */
+  watermark?: boolean;
 }
 
 /** Chrome for every signed-in screen: the header, the crest, the footer. */
-export default function AppShell({ children, clinicalTools = true }: AppShellProps) {
+export default function AppShell({
+  children,
+  clinicalTools = true,
+  watermark = true,
+}: AppShellProps) {
   return (
     <div className="flex min-h-screen flex-1 flex-col">
       <AppHeader clinicalTools={clinicalTools} />
 
       <div className="relative flex flex-1 flex-col overflow-hidden">
-        <CrestWatermark />
+        {watermark && <CrestWatermark />}
 
         {/* The bar spans the window; the content sits centred within it. */}
         <main className="relative mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-8 sm:py-8">
