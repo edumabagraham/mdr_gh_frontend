@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Movement Disorder Registry, KATH",
+  title: "Movement and Neurodegenerative Disorder Registry, KATH",
   description:
-    "Movement Disorder Registry of Komfo Anokye Teaching Hospital, Kumasi (MDR KATH).",
+    "Movement and Neurodegenerative Disorder Registry of Komfo Anokye Teaching Hospital, Kumasi (MNDR KATH).",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

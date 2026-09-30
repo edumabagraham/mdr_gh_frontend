@@ -1,12 +1,16 @@
 import Image from 'next/image';
 
 /**
- * The MDR KATH lockup: hospital crest, a divider, then the registry mark and
+ * The MNDR KATH lockup: hospital crest, a divider, then the registry mark and
  * wordmark — the arrangement used on the signed-out pages and in the app header.
  *
  * Every dimension is a responsive class rather than a fixed prop, so the whole
  * lockup shrinks on a phone and grows on a large monitor. The `width`/`height`
  * on each image only fixes the aspect ratio for Next's image handling.
+ *
+ * The registry mark is sized by height with `w-auto`: it is a 1.87:1 landscape
+ * badge, and pinning both axes to the same value — as a square class does —
+ * squeezes it horizontally.
  */
 export default function BrandMark({ compact = false }: { compact?: boolean }) {
   const crest = compact
@@ -14,8 +18,8 @@ export default function BrandMark({ compact = false }: { compact?: boolean }) {
     : 'h-10 w-10 sm:h-12 sm:w-12 2xl:h-14 2xl:w-14';
 
   const mark = compact
-    ? 'h-6 w-6 sm:h-7 sm:w-7'
-    : 'h-9 w-9 sm:h-11 sm:w-11 2xl:h-12 2xl:w-12';
+    ? 'h-6 w-auto sm:h-7'
+    : 'h-9 w-auto sm:h-10 2xl:h-11';
 
   const divider = compact
     ? 'h-6 w-[3px] sm:h-7'
@@ -31,36 +35,37 @@ export default function BrandMark({ compact = false }: { compact?: boolean }) {
 
   return (
     <div className={`flex items-center ${compact ? 'gap-2 sm:gap-3' : 'gap-3 sm:gap-4'}`}>
-      <span className="shrink-0 rounded-md bg-white p-0.5 ring-1 ring-line">
+      {/* <span className="shrink-0 rounded-md bg-white p-0.5 ring-1 ring-line">
         <Image
           src="/kath_logo.png"
           alt="Komfo Anokye Teaching Hospital crest"
-          width={64}
-          height={64}
+          // Declared well above the 56px the crest ever renders at, so the
+          // candidate Next generates still has pixels to spare on a 2x screen.
+          width={160}
+          height={160}
           priority
           className={`block ${crest}`}
         />
       </span>
 
-      <span aria-hidden className={`shrink-0 full bg-line-strong ${divider}`} />
+      <span aria-hidden className={`shrink-0 rounded-full bg-line-strong ${divider}`} /> */}
 
       <div className={`flex items-center ${compact ? 'gap-2 sm:gap-2.5' : 'gap-2.5 sm:gap-3'}`}>
         <Image
-          src="/mdr-mark.svg"
-          alt="Movement Disorder Registry mark"
-          width={64}
-          height={64}
+          src="/mndr-mark.png"
+          alt="Movement and Neurodegenerative Disorder Registry mark"
+          width={746}
+          height={400}
           priority
-          unoptimized
           className={`shrink-0 rounded-sm ${mark}`}
         />
         <div className="leading-tight">
           {/* The full name needs three lines inside a phone-width header bar,
               so the compact lockup falls back to the short form there. */}
           <p className={`font-bold tracking-tight text-foreground ${title}`}>
-            {compact && <span className="sm:hidden">MDR KATH</span>}
+            {compact && <span className="sm:hidden">MNDR KATH</span>}
             <span className={compact ? 'hidden sm:inline' : undefined}>
-              Movement Disorder Registry
+              Movement and Neurodegenerative Disorder Registry
             </span>
           </p>
           <p className={`text-muted ${subtitle} ${compact ? 'hidden sm:block' : ''}`}>

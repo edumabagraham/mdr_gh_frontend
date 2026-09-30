@@ -49,8 +49,8 @@ export default function LoginPage() {
   return (
     <AuthShell
       headline="A Centre of Excellence"
-      blurb="Sign in to continue to the Movement Disorder Registry. Access is limited to
-             authorised clinical and research staff."
+      blurb="Sign in to continue to the Movement and Neurodegenerative Disorder Registry.
+             Access is limited to authorised clinical and research staff."
     >
       <h2 className="mb-6 text-center text-lg font-semibold text-brand-green">Sign In</h2>
 

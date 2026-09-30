@@ -48,8 +48,8 @@ export default function AuthShell({ headline, blurb, children }: AuthShellProps)
       </div>
 
       <footer className="relative border-t border-line px-5 py-5 text-center text-xs text-muted">
-        © {new Date().getFullYear()} Komfo Anokye Teaching Hospital, Kumasi. Movement Disorder
-        Registry (MDR KATH).
+        © {new Date().getFullYear()} Komfo Anokye Teaching Hospital, Kumasi. Movement and
+        Neurodegenerative Disorder Registry (MNDR KATH).
       </footer>
     </div>
   );

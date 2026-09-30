@@ -34,8 +34,8 @@ export default function AppShell({
       </div>
 
       <footer className="border-t border-line px-4 py-5 text-center text-xs text-muted">
-        © {new Date().getFullYear()} Komfo Anokye Teaching Hospital, Kumasi. Movement Disorder
-        Registry (MDR KATH).
+        © {new Date().getFullYear()} Komfo Anokye Teaching Hospital, Kumasi. Movement and
+        Neurodegenerative Disorder Registry (MNDR KATH).
       </footer>
     </div>
   );
